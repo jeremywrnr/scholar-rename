@@ -4,7 +4,6 @@
 # prereq: pdftotext installation for text dump
 # renames a pdf file to author-title-year.pdf
 # or other formats based on your selection
-# todo - make a suite of decent tests
 # by jeremy warner, fall 2016
 
 
@@ -43,16 +42,16 @@ class Selector
   private
   # Pass in an array to list and be selected, and return the element that the
   # user selects back to the calling method. pretty sketchy way to interpret
-  # the users input as a range or integer, but seems to be working for now.
-  # requires you to check for an array and join it on the downside though
+  # the users input as a range or integer, but seems to be working for now...
+  # requires you to check for an array and join it
   def choose(opts)
     opts.each_with_index {|l, i| puts "#{i}\t#{l}" }
     printf "Your selection [0 - #{opts.length-1}]: "
     line = STDIN.gets.chomp
     meta = "opts[#{line}]"
-    mout = eval meta # in theory terrible but this aint a rails app............
+    mout = eval meta
     if mout.is_a? (Array)
-      mout.join ' '
+      mout.join ''
     else
       mout
     end
@@ -65,7 +64,7 @@ class Selector
     if lines.is_a?(String)
       aline # return first
     else # its an array, augment w/ lname and choose
-      alines = lines.map {|a| a.split.last } + lines
+      alines = lines + lines.map {|a| a.split.last }
       choose alines
     end
   end
@@ -73,18 +72,12 @@ class Selector
   # based on the collected information, generate different forms of the title.
   # perhaps at some point this could be autoselected from the command line,
   # like how the date formatting works, using symbols for different features...
-  # in theory could also handle this with the eval method like above - but this
-  # would probably be better as a send call or an instance_eval method :/
   def gen_forms(y, t, a)
-    ad = a.downcase
-    au = a.upcase
-    return [
-      "#{a}_#{y}_#{t}.pdf".gsub(" ", "_"),
-      "#{au}_#{y}_#{t}.pdf".gsub(" ", "_"),
-      "#{ad}_#{y}_#{t}.pdf".gsub(" ", "_"),
-      "#{a} #{y} #{t}.pdf",
-      "#{au} #{y} #{t}.pdf",
-      "#{ad} #{y} #{t}.pdf",
+    frame = [
+      a.upcase + " " + y + " " + t + ".pdf",
+      a        + " " + t + " " + y + ".pdf",
+      a        + " " + y + " " + t + ".pdf",
+      y        + " " + a + " " + t + ".pdf",
     ]
   end
 
@@ -96,7 +89,8 @@ class Selector
       return lm[0] if !lm.nil?
     end
 
-    Time.now.year.to_s # not matched, just return current year
+    # not matched, return current year
+    Time.now.year.to_s
   end
 end
 
