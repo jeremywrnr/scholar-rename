@@ -19,7 +19,7 @@ class Selector
   # take the first 10 lines of the pdftotext output and assign it to the
   # context class instance variable, use later when choosing selector
   def initialize(c)
-    @content = c.split("\n")[0..10].reject {|x| x.length < 3 }
+    @content = c.split("\n")[0..20].reject {|x| x.length < 3 }
     @fulltxt = c.split("\n")
   end
 
@@ -31,6 +31,7 @@ class Selector
     authors = choose @content
 
     puts "Select author form number:"
+    puts authors
     author = gen_authors(authors)
 
     year = gen_year # just read it
@@ -41,12 +42,20 @@ class Selector
 
   private
   # Pass in an array to list and be selected, and return the element that the
-  # user selects back to the calling method
+  # user selects back to the calling method. pretty sketchy way to interpret
+  # the users input as a range or integer, but seems to be working for now...
+  # requires you to check for an array and join it
   def choose(opts)
     opts.each_with_index {|l, i| puts "#{i}\t#{l}" }
     printf "Your selection [0 - #{opts.length-1}]: "
-    line = STDIN.gets.chomp.to_i
-    opts[line]
+    line = STDIN.gets.chomp
+    meta = "opts[#{line}]"
+    mout = eval meta
+    if mout.is_a? (Array)
+      mout.join ''
+    else
+      mout
+    end
   end
 
   # Generate different forms for author selection, enumerating the different
