@@ -8,7 +8,7 @@
 
 
 file = ARGV.first
-temp = "scholar-rename-temporary-text"
+temp = "temp-scholar-rename-text"
 system("pdftotext -q #{file} #{temp}")
 content = File.read temp
 
@@ -20,12 +20,10 @@ class Selector
   # context class instance variable, use later when choosing selector
   def initialize(c)
     @content = c.split("\n")[0..10].reject {|x| x.length < 3 }
+    @fulltxt = c.split("\n")
   end
 
   def select
-    puts "Select year line number:"
-    year = gen_year(choose @content)
-
     puts "Select title line number:"
     title = choose @content
 
@@ -34,6 +32,8 @@ class Selector
 
     puts "Select author form number:"
     author = gen_authors(authors)
+
+    year = gen_year # just read it
 
     puts "Select desired title format:"
     @title = choose(gen_forms year, title, author)
@@ -73,14 +73,16 @@ class Selector
     ]
   end
 
-  # parse out a year from a string
-  def gen_year(yline)
-    match = yline.match(/(19|20)\d\d/)
-    if match.nil?
-      Time.now.year.to_s
-    else # matched, return year
-      match[0]
+  # parse out a year from a string, for each line of the document until found.
+  # then clean it up and return it
+  def gen_year
+    @fulltxt.each do |l| # find year
+      lm = l.match(/(19|20)\d\d/)
+      return lm[0] if !lm.nil?
     end
+
+    # not matched, return current year
+    Time.now.year.to_s
   end
 end
 
