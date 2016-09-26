@@ -1,0 +1,97 @@
+#!/usr/bin/env ruby
+
+# scholar-rename, interactive pdf-namer
+# prereq: pdftotext installation for text dump
+# renames a pdf file to author-title-year.pdf
+# or other formats based on your selection
+# by jeremy warner, fall 2016
+
+
+file = ARGV.first
+temp = "scholar-rename-temporary-text"
+system("pdftotext -q #{file} #{temp}")
+content = File.read temp
+
+
+class Selector
+  attr_reader :title
+
+  # take the first 10 lines of the pdftotext output and assign it to the
+  # context class instance variable, use later when choosing selector
+  def initialize(c)
+    @content = c.split("\n")[0..10].reject {|x| x.length < 3 }
+  end
+
+  def select
+    puts "Select year line number:"
+    year = gen_year(choose @content)
+
+    puts "Select title line number:"
+    title = choose @content
+
+    puts "Select author line number:"
+    authors = choose @content
+
+    puts "Select author form number:"
+    author = gen_authors(authors)
+
+    puts "Select desired title format:"
+    @title = choose(gen_forms year, title, author)
+  end
+
+  private
+  # Pass in an array to list and be selected, and return the element that the
+  # user selects back to the calling method
+  def choose(opts)
+    opts.each_with_index {|l, i| puts "#{i}\t#{l}" }
+    printf "Your selection [0 - #{opts.length-1}]: "
+    line = STDIN.gets.chomp.to_i
+    opts[line]
+  end
+
+  # Generate different forms for author selection, enumerating the different
+  # author that you want to save the file as. Split based on a comma.
+  def gen_authors(aline)
+    lines = aline.split(",")
+    if lines.is_a?(String)
+      aline # return first
+    else # its an array, augment w/ lname and choose
+      alines = lines + lines.map {|a| a.split.last }
+      choose alines
+    end
+  end
+
+  # based on the collected information, generate different forms of the title.
+  # perhaps at some point this could be autoselected from the command line,
+  # like how the date formatting works, using symbols for different features...
+  def gen_forms(y, t, a)
+    [
+      a.upcase + "_" + y + "_" + t + ".pdf",
+      a        + "_" + t + "_" + y + ".pdf",
+      a        + "_" + y + "_" + t + ".pdf",
+      y        + "_" + a + "_" + t + ".pdf",
+    ]
+  end
+
+  # parse out a year from a string
+  def gen_year(yline)
+    match = yline.match(/(19|20)\d\d/)
+    if match.nil?
+      Time.now.year.to_s
+    else # matched, return year
+      match[0]
+    end
+  end
+end
+
+
+# Choose pdf qualities
+s = Selector.new(content)
+s.select # choose props
+printf "#{s.title} - ok? [yN]: "
+conf = STDIN.gets.chomp
+begin # file read in from first ARGV above
+  File.rename(file, s.title) if conf.match /^(y|Y).*/
+ensure
+  File.delete(temp)
+end
