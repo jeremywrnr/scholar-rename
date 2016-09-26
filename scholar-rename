@@ -52,7 +52,7 @@ class Selector
   # Generate different forms for author selection, enumerating the different
   # author that you want to save the file as. Split based on a comma.
   def gen_authors(aline)
-    lines = aline.split(",")
+    lines = aline.split(", ").map {|a| a.sub /\d$/, '' } # delete ref number.
     if lines.is_a?(String)
       aline # return first
     else # its an array, augment w/ lname and choose
@@ -89,9 +89,11 @@ end
 s = Selector.new(content)
 s.select # choose props
 printf "#{s.title} - ok? [yN]: "
-conf = STDIN.gets.chomp
+conf = STDIN.gets.chomp # confirm title
 begin # file read in from first ARGV above
   File.rename(file, s.title) if conf.match /^(y|Y).*/
-ensure
+ensure # cleaning up file cleanup from pdftotext
+  puts "Cleaning up..."
   File.delete(temp)
 end
+
