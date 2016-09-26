@@ -1,18 +1,6 @@
-#!/usr/bin/env ruby
-
-# scholar-rename, interactive pdf-namer
-# prereq: pdftotext installation for text dump
-# renames a pdf file to author-title-year.pdf
-# or other formats based on your selection
-# todo - make a suite of decent tests
-# by jeremy warner, fall 2016
-
-
-file = ARGV.first
-temp = "temp-scholar-rename-text"
-system("pdftotext -q #{file} #{temp}")
-content = File.read temp
-
+# Class for choosing and displaying the information from the pdf.
+# I wonder if this could be augmented with information from google scholar
+# somehow, there is probably a ruby (or at least python) api.
 
 class Selector
   attr_reader :title
@@ -20,7 +8,7 @@ class Selector
   # take the first 10 lines of the pdftotext output and assign it to the
   # context class instance variable, use later when choosing selector
   def initialize(c)
-    @content = c.split("\n")[0..20].reject {|x| x.length < 3 }
+    @content = c.split("\n")[0..14].reject {|x| x.length < 3 }
     @fulltxt = c.split("\n")
   end
 
@@ -99,17 +87,3 @@ class Selector
     Time.now.year.to_s # not matched, just return current year
   end
 end
-
-
-# Choose pdf qualities
-s = Selector.new(content)
-s.select # choose props
-printf "#{s.title} - ok? [yN]: "
-conf = STDIN.gets.chomp # confirm title
-begin # file read in from first ARGV above
-  File.rename(file, s.title) if conf.match /^(y|Y).*/
-ensure # cleaning up file cleanup from pdftotext
-  puts "Cleaning up..."
-  File.delete(temp)
-end
-
