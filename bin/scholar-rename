@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+# by jeremy warner, fall 2016
+# scholar-rename, interactive pdf-namer
+# prereq: pdftotext installation for text dump
+# renames a pdf file to author-title-year.pdf
+# or other formats based on your selection
+# todo - make a suite of decent tests
+
+require "selector"
+require "renamer"
+
+r = Renamer.new ARGV
+r.rename
