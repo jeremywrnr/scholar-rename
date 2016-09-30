@@ -1,5 +1,3 @@
-require "highline" # allows for multiline menus, and other easier forms of input
-
 # Class for choosing and displaying the information from the pdf.
 # I wonder if this could be augmented with information from google scholar
 # somehow, there is probably a ruby (or at least python) api.

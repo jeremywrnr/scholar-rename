@@ -1,5 +1,3 @@
-require "highline" # allows for multiline menus, and other easier forms of input
-
 class Renamer
   def initialize(*args)
     @file = File.join(Dir.pwd, args.first)
