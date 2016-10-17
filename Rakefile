@@ -29,6 +29,6 @@ end
 RSpec::Core::RakeTask.new(:spec) do |rake|
   rake.verbose = true
   rake.rspec_opts = "--color "
-  rake.rspec_opts << "--format documentation"
-  #rake.rspec_opts << "--format progress"
+  rake.rspec_opts << "--format progress"
+  #rake.rspec_opts << "--format documentation"
 end

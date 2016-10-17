@@ -11,7 +11,7 @@ class Renamer
 
     # Choose pdf qualities
     s = Selector.new(content)
-    s.select # choose props
+    s.select_all # choose props
     printf "Ok? [Yn]: "
     conf = STDIN.gets.chomp # confirm title
 

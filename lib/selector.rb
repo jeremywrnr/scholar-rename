@@ -8,11 +8,11 @@ class Selector
   # take the first 10 lines of the pdftotext output and assign it to the
   # context class instance variable, use later when choosing selector
   def initialize(c)
-    @content = c.split("\n")[0..14].reject {|x| x.length < 3 }
+    @content = c.split("\n")[0..14].reject {|x| x.length < 2 }
     @fulltxt = c.split("\n")
   end
 
-  def select
+  def select_all
     puts "Select title line number:"
     title = choose @content
 
