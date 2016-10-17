@@ -6,7 +6,7 @@ class Renamer
   def rename # move file based on users input
     now = Time.now.to_i.to_s # current time, unique temp file
     temp = File.join(Dir.pwd, "temp-scholar-rename-text-#{now}")
-    system("pdftotext -q #{@file} #{temp}")
+    system("pdftotext -q '#{@file}' '#{temp}'")
     content = File.read temp
 
     # Choose pdf qualities
