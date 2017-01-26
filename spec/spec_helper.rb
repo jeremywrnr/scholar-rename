@@ -2,7 +2,7 @@ lib = File.expand_path("../../../lib/", __FILE__)
 $:.unshift lib unless $:.include?(lib)
 
 # helper for rspec
-require "scholar-rename"
+require_relative "../bin/scholar-rename"
 require "fileutils"
 require "find"
 

@@ -1,9 +1,16 @@
 class Renamer
   def initialize(*args)
     @file = File.join(Dir.pwd, args.first)
+
+    if @file == Dir.pwd.to_s + '/'
+      puts "scholar-rename: provide a file"
+    else
+      rename
+    end
   end
 
   def rename # move file based on users input
+
     now = Time.now.to_i.to_s # current time, unique temp file
     temp = File.join(Dir.pwd, "temp-scholar-rename-text-#{now}")
     system("pdftotext -q '#{@file}' '#{temp}'")

@@ -11,4 +11,3 @@ require "selector"
 require "renamer"
 
 r = Renamer.new ARGV
-r.rename
