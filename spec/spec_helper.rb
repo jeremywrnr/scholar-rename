@@ -1,14 +1,11 @@
-lib = File.expand_path("../../../lib/", __FILE__)
+lib = File.expand_path('../../lib/', __FILE__)
+bin = File.expand_path('../../bin/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
+$:.unshift bin unless $:.include?(bin)
 
-# helper for rspec
-require_relative "../bin/scholar-rename"
-require "fileutils"
-require "find"
+require_relative '../lib/version'
+require_relative '../lib/selector'
+require_relative '../lib/renamer'
 
-# hacky mute-able puts
-$muted = true
-def puts(*x)
-  $muted? x.join : x.flat_map { |y| print y + "\n" }
-end
-
+require 'rubygems'
+require 'rspec'
