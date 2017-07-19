@@ -67,6 +67,7 @@ class Selector
     ad = a.downcase
     au = a.upcase
     return [
+      "#{y} #{a} #{t}.pdf",
       "#{a}_#{y}_#{t}.pdf".gsub(" ", "_"),
       "#{au}_#{y}_#{t}.pdf".gsub(" ", "_"),
       "#{ad}_#{y}_#{t}.pdf".gsub(" ", "_"),
