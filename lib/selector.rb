@@ -49,7 +49,7 @@ class Selector
   # Generate different forms for author selection, enumerating the different
   # author that you want to save the file as. Split based on a comma.
   def gen_authors(aline)
-    lines = aline.split(", ").map {|a| a.sub /\d$/, '' } # delete ref number.
+    lines = aline.split(", ").map {|a| a.sub(/\d$/, '') } # delete ref number.
     if lines.is_a?(String)
       aline # return first
     else # its an array, augment w/ lname and choose

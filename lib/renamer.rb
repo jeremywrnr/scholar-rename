@@ -1,9 +1,12 @@
 class Renamer
   def initialize(*args)
-    @file = File.join(Dir.pwd, args.first)
+    a1 = args.first
+    @file = File.join(Dir.pwd, a1)
 
     if @file == Dir.pwd.to_s + '/'
       puts "scholar-rename: provide a file"
+    elsif a1 == "-v"
+      puts SR::Version
     else
       rename
     end
@@ -22,7 +25,7 @@ class Renamer
     conf = STDIN.gets.chomp # confirm title
 
     begin # file read in from first ARGV above
-      File.rename(@file, s.title) unless conf.match /^(n|N).*/
+      File.rename(@file, s.title) unless conf.match(/^(n|N).*/)
     ensure # cleaning up @file cleanup from pdftotext
       puts "Cleaning up..."
       File.delete(temp)
