@@ -1,1 +1,3 @@
-module SR; Version = "0.1.2"; end
+module SR
+  Version = "0.1.3"
+end

@@ -13,11 +13,13 @@ class Selector
   end
 
   def select_all
+    @content.each_with_index {|l, i| puts "#{i}\t#{l}" }
+
     puts "Select title line number:"
-    title = choose @content
+    authors = choose(@content, print: False)
 
     puts "Select author line number:"
-    authors = choose @content
+    authors = choose(@content, print: False)
 
     puts "Select author form number:"
     author = gen_authors(authors)
@@ -33,7 +35,7 @@ class Selector
   # user selects back to the calling method. pretty sketchy way to interpret
   # the users input as a range or integer, but seems to be working for now.
   # requires you to check for an array and join it on the downside though
-  def choose(opts)
+  def choose(opts, print: True)
     opts.each_with_index {|l, i| puts "#{i}\t#{l}" }
     printf "Your selection [0 - #{opts.length-1}]: "
     line = STDIN.gets.chomp

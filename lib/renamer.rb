@@ -1,6 +1,7 @@
 class Renamer
   def initialize(*args)
     a1 = args.first
+    puts args
     @file = File.join(Dir.pwd, a1)
 
     if @file == Dir.pwd.to_s + '/'
