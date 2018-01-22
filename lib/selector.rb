@@ -2,31 +2,40 @@
 # I wonder if this could be augmented with information from google scholar
 # somehow, there is probably a ruby (or at least python) api.
 
+require 'colored'
+
+class String
+  alias_method :bow, :black_on_white
+end
+
 class Selector
   attr_reader :title
 
   # take the first 10 lines of the pdftotext output and assign it to the
   # context class instance variable, use later when choosing selector
+  # https://stackoverflow.com/questions/9503554/
   def initialize(c)
-    @content = c.split("\n")[0..14].reject {|x| x.length < 2 }
+    @content = c.split("\n")[0..14]
+      .reject {|x| x.length < 2 }
+      .map {|x| x[0..100] } # trim
     @fulltxt = c.split("\n")
   end
 
   def select_all
+    puts "Options:".bow
     @content.each_with_index {|l, i| puts "#{i}\t#{l}" }
+    printf "Select title line number ".bow
+    title = choose(@content, print: false)
 
-    puts "Select title line number:"
-    authors = choose(@content, print: False)
+    printf "Select author line number ".bow
+    authors = choose(@content, print: false)
 
-    puts "Select author line number:"
-    authors = choose(@content, print: False)
-
-    puts "Select author form number:"
+    puts "Select author form:".bow
     author = gen_authors(authors)
 
     year = gen_year # just read it
 
-    puts "Select desired title format:"
+    puts "Select desired title:".bow
     @title = choose(gen_forms year, title, author)
   end
 
@@ -35,11 +44,11 @@ class Selector
   # user selects back to the calling method. pretty sketchy way to interpret
   # the users input as a range or integer, but seems to be working for now.
   # requires you to check for an array and join it on the downside though
-  def choose(opts, print: True)
-    opts.each_with_index {|l, i| puts "#{i}\t#{l}" }
-    printf "Your selection [0 - #{opts.length-1}]: "
+  def choose(options, print: true)
+    options.each_with_index {|l, i| puts "#{i}\t#{l}" } if print
+    printf "[0 - #{options.length-1}]: ".bow
     line = STDIN.gets.chomp
-    meta = "opts[#{line}]"
+    meta = "options[#{line}]"
     mout = eval meta # in theory terrible but this aint a rails app............
     if mout.is_a? (Array)
       mout.join ' '

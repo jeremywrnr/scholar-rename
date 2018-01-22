@@ -9,6 +9,6 @@ describe Renamer do
 
   it 'should show standard help when given no args' do
     #Renamer.new '-v'
-    expect(False).to eq SR::Version
+    expect(FALSE).to eq SR::Version
   end
 end

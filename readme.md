@@ -1,8 +1,9 @@
 # scholar-rename
 
-an interactive pdf-renamer tool.
+[![MIT](https://img.shields.io/npm/l/alt.svg?style=flat)](http://jeremywrnr.com/mit-license)
+[![Gem Version](https://badge.fury.io/rb/scholar-rename.svg)](https://badge.fury.io/rb/scholar-rename)
 
-*by jeremy warner, fall 2016*
+an interactive pdf-renamer tool.
 
 ## install
 
