@@ -12,7 +12,7 @@ class Renamer
       puts "please install pdftotext to use scholar-rename"
       puts "osx: brew install xpdf"
     else
-      rename
+      rename a1
     end
   end
 
@@ -21,7 +21,7 @@ class Renamer
     $?.success?
   end
 
-  def rename
+  def rename(opts)
     raw = `pdftotext -q '#{@file}' -` # may contain non-ascii characters
     content = raw.encode('UTF-8', :invalid => :replace, :undef => :replace)
 
@@ -31,7 +31,7 @@ class Renamer
     #system("pdftotext -q '#{@file}' '#{temp}'")
 
     # Choose pdf qualities
-    s = Selector.new(content)
+    s = Selector.new(content, opts)
     s.select_all # choose props
     printf "Ok? [Yn]: "
 

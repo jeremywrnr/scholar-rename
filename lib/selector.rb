@@ -14,11 +14,14 @@ class Selector
   # take the first 10 lines of the pdftotext output and assign it to the
   # context class instance variable, use later when choosing selector
   # https://stackoverflow.com/questions/9503554/
-  def initialize(c)
+  def initialize(c, opts)
     @content = c.split("\n")[0..14]
       .reject {|x| x.length < 2 }
       .map {|x| x[0..100] } # trim
     @fulltxt = c.split("\n")
+    if opts = "if"
+      @format = True # autoselect format type
+    end
   end
 
   def select_all
@@ -35,8 +38,12 @@ class Selector
 
     year = gen_year # just read it
 
+    if @format
+      @title = gen_forms(year, title, author).first
+    else
     puts "Select desired title:".bow
     @title = choose(gen_forms year, title, author)
+    end
   end
 
   private
@@ -78,8 +85,8 @@ class Selector
     ad = a.downcase
     au = a.upcase
     return [
-      "#{y} #{a} #{t}.pdf",
       "#{y} - #{a} - #{t}.pdf",
+      "#{y} #{a} #{t}.pdf",
       "#{a}_#{y}_#{t}.pdf".gsub(" ", "_"),
       "#{au}_#{y}_#{t}.pdf".gsub(" ", "_"),
       "#{ad}_#{y}_#{t}.pdf".gsub(" ", "_"),
