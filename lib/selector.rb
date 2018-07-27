@@ -20,7 +20,7 @@ class Selector
       .map {|x| x[0..100] } # trim
     @fulltxt = c.split("\n")
     if opts = "if"
-      @format = True # autoselect format type
+      @format = TRUE # autoselect format type
     end
   end
 
