@@ -19,7 +19,7 @@ class Selector
       .reject {|x| x.length < 2 }
       .map {|x| x[0..100] } # trim
     @fulltxt = c.split("\n")
-    if opts = "if"
+    if opts == "-f"
       @format = TRUE # autoselect format type
     end
   end
