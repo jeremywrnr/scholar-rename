@@ -41,8 +41,8 @@ class Selector
     if @format
       @title = gen_forms(year, title, author).first
     else
-    puts "Select desired title:".bow
-    @title = choose(gen_forms year, title, author)
+      puts "Select desired title:".bow
+      @title = choose(gen_forms year, title, author)
     end
   end
 
@@ -52,15 +52,17 @@ class Selector
   # the users input as a range or integer, but seems to be working for now.
   # requires you to check for an array and join it on the downside though
   def choose(options, print: true)
-    options.each_with_index {|l, i| puts "#{i}\t#{l}" } if print
-    printf "[0 - #{options.length-1}]: ".bow
-    line = STDIN.gets.chomp
-    meta = "options[#{line}]"
-    mout = eval meta # in theory terrible but this aint a rails app............
-    if mout.is_a? (Array)
-      mout.join ' '
-    else
-      mout
+    if options.length > 0
+      options.each_with_index {|l, i| puts "#{i}\t#{l}" } if print
+      printf "[0 - #{options.length-1}]: ".bow
+      line = STDIN.gets.chomp || 0
+      meta = "options[#{line}]"
+      mout = eval meta # in theory terrible but this aint a rails app............
+      if mout.is_a? (Array)
+        mout.join ' '
+      else
+        mout
+      end
     end
   end
 
