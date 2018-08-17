@@ -1,3 +1,5 @@
+require_relative "./version.rb"
+
 class Renamer
   attr_reader :vers
   def initialize(*args)
