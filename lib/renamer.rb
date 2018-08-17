@@ -1,10 +1,13 @@
 class Renamer
+  attr_reader :vers
   def initialize(*args)
     a1 = args.first
     @file = File.join(Dir.pwd, a1)
+    @vers = SR::Version
 
     if a1 == "-v"
-      puts SR::Version
+      puts @vers
+      return self
     elsif @file == Dir.pwd.to_s + '/'
       puts "usage: scholar-rename [pdf_file]"
       puts "please specify a pdf file"
@@ -33,14 +36,17 @@ class Renamer
     # Choose pdf qualities
     s = Selector.new(content, opts)
     s.select_all # choose props
-    printf "Ok? [Yn]: "
 
-    begin
-      conf = STDIN.gets.chomp # confirm title
-      File.rename(@file, s.title) unless conf.match(/^(n|N).*/)
-    ensure
-      puts "Cleaning up..."
-      #File.delete(temp)
-    end
+    # Final title confirm
+    #printf "Ok? [Yn]: "
+    #conf = STDIN.gets.chomp
+    #unless conf.match(/^(n|N).*/)
+    #begin
+    #ensure
+    #puts "Cleaning up..."
+    #File.delete(temp)
+    #end
+
+    File.rename(@file, s.title)
   end
 end

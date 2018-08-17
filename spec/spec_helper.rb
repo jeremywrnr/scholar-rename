@@ -9,3 +9,7 @@ require_relative '../lib/renamer'
 
 require 'rubygems'
 require 'rspec'
+
+def puts(*x)
+  x
+end
