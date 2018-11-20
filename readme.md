@@ -11,6 +11,10 @@ an interactive pdf-renamer tool.
 
 you'll also need: https://en.wikipedia.org/wiki/Pdftotext
 
+for macOS, you can install w/ brew:
+
+    brew install poppler
+
 ## about
 
 renames a pdf file to author-title-year.pdf or other formats based on your
