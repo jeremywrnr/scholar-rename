@@ -50,7 +50,7 @@ class Renamer
     @selector.options = {:format => @format} if @format
     @selector.select_all # choose props
 
-    if !@@TESTING
+    if @@TESTING
       puts @file, @selector.title
     else
       File.rename(@file, @selector.title)
