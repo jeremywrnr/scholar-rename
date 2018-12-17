@@ -10,18 +10,19 @@ end
 
 class Selector
   attr_reader :title
+  attr_accessor :content, :options
 
-  # take the first 10 lines of the pdftotext output and assign it to the
-  # context class instance variable, use later when choosing selector
   # https://stackoverflow.com/questions/9503554/
-  def initialize(c, opts)
-    @content = c.split("\n")[0..14]
+  def initialize(c = '', opts = {:format => 0})
+    set_content(c)
+    @fulltxt = c.split("\n")
+    @options = opts
+  end
+
+  def set_content(str)
+    @content = str.split("\n")[0..14]
       .reject {|x| x.length < 2 }
       .map {|x| x[0..100] } # trim
-    @fulltxt = c.split("\n")
-    if opts == "-f"
-      @format = TRUE # autoselect format type
-    end
   end
 
   def select_all
@@ -38,44 +39,11 @@ class Selector
 
     year = gen_year # just read it
 
-    if @format
-      @title = gen_forms(year, title, author).first
-    else
-      puts "Select desired title:".bow
-      @title = choose(gen_forms year, title, author)
-    end
-  end
+    forms = gen_forms(year, title, author)
+    @title = forms[@options[:format]]
 
-  private
-  # Pass in an array to list and be selected, and return the element that the
-  # user selects back to the calling method. pretty sketchy way to interpret
-  # the users input as a range or integer, but seems to be working for now.
-  # requires you to check for an array and join it on the downside though
-  def choose(options, print: true)
-    if options.length > 0
-      options.each_with_index {|l, i| puts "#{i}\t#{l}" } if print
-      printf "[0 - #{options.length-1}]: ".bow
-      line = STDIN.gets.chomp || 0
-      meta = "options[#{line}]"
-      mout = eval meta # in theory terrible but this aint a rails app............
-      if mout.is_a? (Array)
-        mout.join ' '
-      else
-        mout
-      end
-    end
-  end
-
-  # Generate different forms for author selection, enumerating the different
-  # author that you want to save the file as. Split based on a comma.
-  def gen_authors(aline)
-    lines = aline.split(", ").map {|a| a.sub(/\d$/, '') } # delete ref number.
-    if lines.is_a?(String)
-      aline # return first
-    else # its an array, augment w/ lname and choose
-      alines = lines.map {|a| a.split.last } + lines
-      choose alines
-    end
+    #puts "Select desired title:".bow
+    #@title = choose(forms)
   end
 
   # based on the collected information, generate different forms of the title.
@@ -96,6 +64,38 @@ class Selector
       "#{au} #{y} #{t}.pdf",
       "#{ad} #{y} #{t}.pdf",
     ]
+  end
+
+  private
+  # Pass in an array to list and be selected, and return the element that the
+  # user selects back to the calling method. pretty sketchy way to interpret
+  # the users input as a range or integer, but seems to be working for now.
+  # requires you to check for an array and join it on the downside though
+  def choose(options, print: true)
+    if options.length > 0
+      options.each_with_index {|l, i| puts "#{i}\t#{l}" } if print
+      printf "[0 - #{options.length-1}]: ".bow
+      line = STDIN.gets.chomp || 0
+      meta = "options[#{line}]"
+      mout = eval meta # in theory terrible but this ain't a rails app.....
+      if mout.is_a? (Array)
+        mout.join ' '
+      else
+        mout
+      end
+    end
+  end
+
+  # Generate different forms for author selection, enumerating the different
+  # author that you want to save the file as. Split based on a comma.
+  def gen_authors(aline)
+    lines = aline.split(", ").map {|a| a.sub(/\d$/, '') } # delete ref number.
+    if lines.is_a?(String)
+      aline # return first
+    else # its an array, augment w/ lname and choose
+      alines = lines.map {|a| a.split.last } + lines
+      choose alines
+    end
   end
 
   # parse out a year from a string, for each line of the document until found.

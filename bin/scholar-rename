@@ -11,4 +11,5 @@
 require_relative '../lib/selector'
 require_relative '../lib/renamer'
 
-Renamer.new ARGV
+r = Renamer.new ARGV
+r.rename

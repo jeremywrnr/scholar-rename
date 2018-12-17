@@ -1,23 +1,32 @@
 require_relative "./version.rb"
 
 class Renamer
-  attr_reader :vers
+  attr_reader :vers, :formats, :selector, :format
   def initialize(*args)
-    a1 = args.first
-    @file = File.join(Dir.pwd, a1)
-    @vers = SR::Version
+    a0 = args.first
 
-    if a1 == "-v"
+    @opts = {}
+    @vers = SR::Version
+    @file = File.join(Dir.pwd, a0)
+    @selector = Selector.new
+    @formats = @selector.gen_forms("Year", "Title", "Author")
+
+    if a0 == "-v" || a0 == "--version"
       puts @vers
       return self
+    elsif a0 == "--format" && args.length == 1
+      @formats.each_with_index {|x, i| puts "\t#{i}: #{x}"}
+      return self
     elsif @file == Dir.pwd.to_s + '/'
-      puts "usage: scholar-rename [pdf_file]"
-      puts "please specify a pdf file"
+      puts "usage: scholar-rename (--format #) [file.pdf]"
+      puts "\t--format\tshow format options"
+      puts "\t-v\tshow version number"
     elsif has_prereq?
       puts "please install pdftotext to use scholar-rename"
       puts "osx: brew install xpdf"
-    else
-      rename a1
+    elsif a0 == "--format" && args.length > 1
+      form_idx = args[1].to_i
+      @format = form_idx
     end
   end
 
@@ -26,7 +35,7 @@ class Renamer
     $?.success?
   end
 
-  def rename(opts)
+  def rename
     raw = `pdftotext -q '#{@file}' -` # may contain non-ascii characters
     content = raw.encode('UTF-8', :invalid => :replace, :undef => :replace)
 
@@ -36,19 +45,10 @@ class Renamer
     #system("pdftotext -q '#{@file}' '#{temp}'")
 
     # Choose pdf qualities
-    s = Selector.new(content, opts)
-    s.select_all # choose props
+    @selector.set_content(content)
+    @selector.options = {:format => @format}
+    @selector.select_all # choose props
 
-    # Final title confirm
-    #printf "Ok? [Yn]: "
-    #conf = STDIN.gets.chomp
-    #unless conf.match(/^(n|N).*/)
-    #begin
-    #ensure
-    #puts "Cleaning up..."
-    #File.delete(temp)
-    #end
-
-    File.rename(@file, s.title)
+    File.rename(@file, @selector.title)
   end
 end
