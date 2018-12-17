@@ -14,6 +14,4 @@ class Renamer
   @@TESTING = true
 end
 
-def puts(*x)
-  x
-end
+#def puts(*x); x; end

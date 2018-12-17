@@ -5,23 +5,28 @@ class Renamer
 
   attr_reader :vers, :formats, :selector, :format
   def initialize(*args)
+    args = args.flatten
     a0 = args.first
-
-    puts args.inspect
+    #puts args.inspect
 
     @opts = {}
     @vers = SR::Version
     @selector = Selector.new
     @formats = @selector.gen_forms("Year", "Title", "Author")
 
-    if args.last[0] != "-"
-      @file = File.join(Dir.pwd, args.last)
+    if !args.last.nil? && args.last[0] != "-"
+      @file = File.join(Dir.pwd, args.last).to_s
+    end
+
+    if @file && !File.file?(@file)
+      puts "Input #{@file} not found."
+      exit 1
     end
 
     if args.length == 0
       puts "usage: scholar-rename (--format #) [file.pdf]"
+      puts "\t-v, --version\tshow version number"
       puts "\t--format\tshow format options"
-      puts "\t-v\tshow version number"
     elsif a0 == "-v" || a0 == "--version"
       puts @vers
     elsif a0 == "--format" && args.length == 1
@@ -31,6 +36,10 @@ class Renamer
       puts "osx: brew install xpdf"
     elsif a0 == "--format" && args.length > 1
       @format = args[1].to_i
+    end
+
+    if @file && File.file?(@file)
+      rename
     end
   end
 

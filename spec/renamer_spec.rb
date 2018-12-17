@@ -17,7 +17,7 @@ describe Renamer do
   end
 
   it 'should show format with --format number' do
-    out = Renamer.new '--format', ' 1', "test.pdf"
+    out = Renamer.new '--format', ' 1', "spec/test.pdf"
     expect(out.format).to eq 1
   end
 end
