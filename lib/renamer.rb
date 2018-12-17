@@ -7,7 +7,7 @@ class Renamer
 
     @opts = {}
     @vers = SR::Version
-    @file = File.join(Dir.pwd, a0)
+    @file = File.join(Dir.pwd, args.last)
     @selector = Selector.new
     @formats = @selector.gen_forms("Year", "Title", "Author")
 
@@ -25,8 +25,7 @@ class Renamer
       puts "please install pdftotext to use scholar-rename"
       puts "osx: brew install xpdf"
     elsif a0 == "--format" && args.length > 1
-      form_idx = args[1].to_i
-      @format = form_idx
+      @format = args[1].to_i
     end
   end
 
@@ -46,9 +45,13 @@ class Renamer
 
     # Choose pdf qualities
     @selector.set_content(content)
-    @selector.options = {:format => @format}
+    @selector.options = {:format => @format} if @format
     @selector.select_all # choose props
 
-    File.rename(@file, @selector.title)
+    if !@@TESTING
+      puts @file, @selector.title
+    else
+      File.rename(@file, @selector.title)
+    end
   end
 end

@@ -10,6 +10,10 @@ require_relative '../lib/renamer'
 require 'rubygems'
 require 'rspec'
 
+class Renamer
+  @@TESTING = true
+end
+
 def puts(*x)
   x
 end
