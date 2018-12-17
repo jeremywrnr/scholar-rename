@@ -1,6 +1,8 @@
 require_relative "./version.rb"
 
 class Renamer
+  @@TESTING = false
+
   attr_reader :vers, :formats, :selector, :format
   def initialize(*args)
     a0 = args.first
