@@ -7,22 +7,25 @@ class Renamer
   def initialize(*args)
     a0 = args.first
 
+    puts args.inspect
+
     @opts = {}
     @vers = SR::Version
-    @file = File.join(Dir.pwd, args.last)
     @selector = Selector.new
     @formats = @selector.gen_forms("Year", "Title", "Author")
 
-    if a0 == "-v" || a0 == "--version"
-      puts @vers
-      return self
-    elsif a0 == "--format" && args.length == 1
-      @formats.each_with_index {|x, i| puts "\t#{i}: #{x}"}
-      return self
-    elsif @file == Dir.pwd.to_s + '/'
+    if args.last[0] != "-"
+      @file = File.join(Dir.pwd, args.last)
+    end
+
+    if args.length == 0
       puts "usage: scholar-rename (--format #) [file.pdf]"
       puts "\t--format\tshow format options"
       puts "\t-v\tshow version number"
+    elsif a0 == "-v" || a0 == "--version"
+      puts @vers
+    elsif a0 == "--format" && args.length == 1
+      @formats.each_with_index {|x, i| puts "\t#{i}: #{x}"}
     elsif has_prereq?
       puts "please install pdftotext to use scholar-rename"
       puts "osx: brew install xpdf"
@@ -54,6 +57,7 @@ class Renamer
       puts @file, @selector.title
     else
       File.rename(@file, @selector.title)
+      puts "Saved #{@selector.title}"
     end
   end
 end
