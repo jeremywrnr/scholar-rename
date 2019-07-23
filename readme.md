@@ -13,7 +13,7 @@ you'll also need: https://en.wikipedia.org/wiki/Pdftotext
 
 for macOS, you can install w/ brew:
 
-    brew install poppler
+    brew install pkg-config poppler
 
 ## about
 

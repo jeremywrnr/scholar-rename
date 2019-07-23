@@ -12,12 +12,14 @@ describe Renamer do
   end
 
   it 'should show formats with --format' do
-    out = Renamer.new '--format'
-    expect(out.formats.instance_of? Array).to eq true
+    raise "TODO - implement non-interactive version"
+    #out = Renamer.new '--format'
+    #expect(out.formats.instance_of? Array).to eq true
   end
 
-  it 'should show format with --format number' do
-    out = Renamer.new '--format', ' 1', "spec/test.pdf"
-    expect(out.format).to eq 1
+  it 'should select format with --format number' do
+    raise "TODO - implement non-interactive version"
+    #out = Renamer.new '--format', ' 1', "spec/test.pdf"
+    #expect(out.format).to eq 1
   end
 end

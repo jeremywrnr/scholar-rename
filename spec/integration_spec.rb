@@ -21,6 +21,8 @@ describe "bin/scholar-renamer" do
   it 'should test real file' do
     system ("./bin/scholar-rename --format 0 spec/test.pdf")
     expect($?.exitstatus).to eq 0
+    system ("./bin/scholar-rename --format 0 spec/test\ space.pdf")
+    expect($?.exitstatus).to eq 0
     system ("./bin/scholar-rename --format 0 spec/fake.pdf")
     expect($?.exitstatus).to eq 1
   end

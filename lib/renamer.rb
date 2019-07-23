@@ -31,11 +31,12 @@ class Renamer
       puts @vers
     elsif a0 == "--format" && args.length == 1
       @formats.each_with_index {|x, i| puts "\t#{i}: #{x}"}
-    elsif has_prereq?
-      puts "please install pdftotext to use scholar-rename"
-      puts "osx: brew install xpdf"
+    elsif !has_prereq?
+      puts "please install pdftotext (via poppler) to use scholar-rename"
+      puts "brew install pkg-config poppler"
+      exit 1
     elsif a0 == "--format" && args.length > 1
-      @format = args[1].to_i
+      @format = args[1].to_s
     end
 
     if @file && File.file?(@file)
@@ -59,7 +60,7 @@ class Renamer
 
     # Choose pdf qualities
     @selector.set_content(content)
-    @selector.options = {:format => @format} if @format
+    @selector.options = {:format => @format.to_i} if @format
     @selector.select_all # choose props
 
     if @@TESTING
