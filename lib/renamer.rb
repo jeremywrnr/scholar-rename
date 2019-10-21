@@ -45,7 +45,7 @@ class Renamer
   end
 
   def has_prereq?
-    system("pdftotext 2> /dev/null")
+    system("pdftotext -v 2> /dev/null")
     $?.success?
   end
 
