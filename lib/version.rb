@@ -1,3 +1,3 @@
 module SR
-  Version = "0.3.7"
+  Version = "0.4.0"
 end
