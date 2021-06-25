@@ -42,7 +42,7 @@ class Renamer
       puts "\t-v, --version\tshow version number"
     elsif a0 == "-v" || a0 == "--version"
       puts @version
-      exit 0
+      exit 0 unless @options[:test]
     elsif !has_prereq?
       puts "please install pdftotext (via poppler) to use scholar-rename"
       puts "OSX: brew install pkg-config poppler"
