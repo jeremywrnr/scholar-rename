@@ -78,7 +78,7 @@ class Selector
 
     meta = "list[#{line}]"
     mout = eval meta
-    mout.join " " if mout.is_a? (Array)
+    mout = mout.join " " if mout.is_a? (Array)
     mout
   end
 
