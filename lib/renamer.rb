@@ -6,26 +6,35 @@ class Renamer
   def initialize(*args)
     args = args.flatten
     a0 = args.first
+    al = args.last
 
-    @opts = { :format => 0, :auto => false }
+    @real_file = false
+    @options = { :format => 0, :auto => false, :debug => false, :test => false }
     @version = SR::Version
     @selector = Selector.new
     @formats = @selector.gen_forms("Year", "Title", "Author")
 
-    if !args.last.nil? && args.last[0] != "-"
-      @file = File.join(Dir.pwd, args.last).to_s
+    if args.include? "--debug"
+      @options[:debug] = true
     end
 
-    if @file && !File.file?(@file)
+    if args.include? "--test"
+      @options[:test] = true
+      def puts(*x) x; end
+    end
+
+    # Filename comes last.
+    if !al.nil? && al[0] != "-"
+      @file = File.join(Dir.pwd, args.last).to_s
+      @real_file = @file && File.file?(@file)
+    end
+    if @file && !@real_file
       puts "Input #{@file} not found."
       puts "Please specify a pdf file to use with scholar-rename."
       exit 1
     end
 
-    if args.includes "--debug"
-      @debug = true
-    end
-
+    # Main argument processing.
     if args.length == 0 || a0 == "--h" || a0 == "--help"
       puts "usage: scholar-rename (--format #) (--auto) [file.pdf]"
       puts "\t--show-formats\tshow format options"
@@ -33,6 +42,7 @@ class Renamer
       puts "\t-v, --version\tshow version number"
     elsif a0 == "-v" || a0 == "--version"
       puts @version
+      exit 0
     elsif !has_prereq?
       puts "please install pdftotext (via poppler) to use scholar-rename"
       puts "OSX: brew install pkg-config poppler"
@@ -40,12 +50,12 @@ class Renamer
     elsif a0 == "--show-formats"
       @formats.each_with_index { |x, i| puts "\t#{i}: #{x}" }
     elsif a0 == "--format"
-      @opts.format = args[1].to_i
+      @options[:format] = args[1].to_i
     elsif a0 == "--auto"
-      @opts.auto = true
+      @options[:auto] = true
     end
 
-    rename
+    rename args if @real_file
   end
 
   def has_prereq?
@@ -53,16 +63,20 @@ class Renamer
     $?.success?
   end
 
-  def rename
+  def rename(args)
     raw = `pdftotext -q '#{@file}' -` # may contain non-ascii characters
     content = raw.encode("UTF-8", :invalid => :replace, :undef => :replace)
-
+    
     # Choose pdf qualities
     @selector.set_content(content)
     @selector.options = @options
     @selector.select_all
+    md = @selector.metadata
 
-    if @debug
+    if @options[:debug]
+      puts md[:year] if args.include? "--show-year"
+      puts md[:title] if args.include? "--show-title"
+      puts md[:author] if args.include? "--show-author"
     else
       File.rename(@file, @selector.title)
       puts "Saved #{@selector.title}"

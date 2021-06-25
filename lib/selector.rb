@@ -3,36 +3,43 @@
 # somehow, there is probably a ruby (or at least python) api.
 
 class Selector
-  attr_reader :title
-  attr_accessor :content, :options
+  attr_reader :title, :metadata, :content
+  attr_accessor :options
 
-  def initialize(c = "", opts = { :format => 0, :auto => true })
+  def initialize(c = "Test\nPDF\nContent", opts = { :format => 0, :auto => true })
     set_content(c)
-    @fulltxt = c.split("\n")
     @options = opts
+    if opts[:test]
+      def puts(*x) x; end
+    end
   end
 
   def set_content(str)
-    @content = str.split("\n")[0..14]
+    @full_text = str.split("\n")
+    @content = @full_text[0..14]
       .reject { |x| x.length < 2 }
       .map { |x| x[0..100] } # trim
   end
 
   def select_all
-    puts "Options:"
-    @content.each_with_index { |l, i| puts "#{i}\t#{l}" }
-    printf "Select title line number "
+    if !@options[:auto]
+      puts "Options:"
+      @content.each_with_index { |l, i| puts "#{i}\t#{l}" }
+    end
+    printf "Select title line number " unless @options[:auto]
     title = choose(@content, print: false)
 
-    printf "Select author line number "
+    printf "Select author line number " unless @options[:auto]
     authors = choose(@content, print: false)
 
-    puts "Select author form:"
+    puts "Select author form:" unless @options[:auto]
     author = gen_authors(authors)
 
-    year = gen_year # just read it
-
+    # Automatically match.
+    year = gen_year
+    
     forms = gen_forms(year, title, author)
+    @metadata = {:year => year, :title => title, :author => author}
     @title = forms[@options[:format]]
   end
 
@@ -55,20 +62,21 @@ class Selector
   # Pass in an array to list and be selected, and return the element that the
   # user selects back to the calling method. this is a way to interpret
   # the users input as a range (e.g., 0..2) or an integer (1).
-  def choose(options, print: true)
-    return "Null options" if options.length == 0
-    if print
-      options.each_with_index { |l, i| puts "#{i}\t#{l}" }
-      printf "[0 - #{options.length - 1}]: "
-    end
+  def choose(list, print: true)
+    raise "List is empty." if list.empty?
 
-    if !auto
-      line = STDIN.gets.chomp || 0
-    else
+    if @options[:auto]
       line = 0
+    else
+      # Never print when --auto.
+      if print
+        list.each_with_index { |l, i| puts "#{i}\t#{l}" }
+        printf "[0 - #{options.length - 1}]: "
+      end
+      line = STDIN.gets.chomp || 0
     end
 
-    meta = "options[#{line}]"
+    meta = "list[#{line}]"
     mout = eval meta
     mout.join " " if mout.is_a? (Array)
     mout
@@ -89,7 +97,7 @@ class Selector
   # Parse out a year from a string, for each line of the document until found.
   # Then clean it up and return it.
   def gen_year
-    @fulltxt.each do |l| # find year
+    @full_text.each do |l| # find year
       lm = l.match(/(19|20)\d\d/)
       return lm[0] if !lm.nil?
     end

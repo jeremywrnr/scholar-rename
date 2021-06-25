@@ -1,40 +1,46 @@
 require "spec_helper"
 
 describe "bin/scholar-renamer" do
+  def call(arg)
+    out = `./bin/scholar-rename #{arg}`
+    out.strip!
+    out
+  end
+
   it "should show help" do
-    system("./bin/scholar-rename")
+    system("./bin/scholar-rename --help --test")
     expect($?.exitstatus).to eq 0
   end
 
-  it "should show versions -v/--version" do
-    system ("./bin/scholar-rename -v")
+  it "should show version with -v/--version" do
+    call "-v --test"
     expect($?.exitstatus).to eq 0
-    system ("./bin/scholar-rename --version")
+    call "--version --test"
     expect($?.exitstatus).to eq 0
   end
 
   it "should show formats" do
-    system ("./bin/scholar-rename --format")
+    call "--show-formats --test"
     expect($?.exitstatus).to eq 0
   end
 
   it "should grab the right year automatically" do
-    year = `./bin/scholar-rename --test-year spec/kevin.pdf`
-    expect(year.trim).to "2019"
+    year = call "--auto --debug --show-year spec/kevin.pdf"
+    expect(year).to eq "2019"
   end
 
   it "should test real files" do
-    system ("./bin/scholar-rename --auto spec/test.pdf")
+    call "--auto spec/test.pdf --debug"
     expect($?.exitstatus).to eq 0
   end
 
-  it "should test real files with spaces" do
-    system ("./bin/scholar-rename --auto spec/test\ space.pdf")
+  it "should test real files with spaces in their name" do
+    call "--auto spec/test\ space.pdf --debug"
     expect($?.exitstatus).to eq 0
   end
 
   it "should reject non-existent files" do
-    system ("./bin/scholar-rename --auto 0 spec/fake.pdf")
+    call "--auto spec/fake.pdf"
     expect($?.exitstatus).to eq 1
   end
 end
