@@ -2,17 +2,10 @@
 # I wonder if this could be augmented with information from google scholar
 # somehow, there is probably a ruby (or at least python) api.
 
-require 'colored'
-
-class String
-  alias_method :bow, :black_on_white
-end
-
 class Selector
   attr_reader :title
   attr_accessor :content, :options
 
-  # https://stackoverflow.com/questions/9503554/
   def initialize(c = '', opts = {:format => 0})
     set_content(c)
     @fulltxt = c.split("\n")
@@ -26,31 +19,24 @@ class Selector
   end
 
   def select_all
-    puts "Options:".bow
+    puts "Options:"
     @content.each_with_index {|l, i| puts "#{i}\t#{l}" }
-    printf "Select title line number ".bow
+    printf "Select title line number "
     title = choose(@content, print: false)
 
-    printf "Select author line number ".bow
+    printf "Select author line number "
     authors = choose(@content, print: false)
 
-    puts "Select author form:".bow
+    puts "Select author form:"
     author = gen_authors(authors)
 
     year = gen_year # just read it
 
     forms = gen_forms(year, title, author)
     @title = forms[@options[:format]]
-
-    #puts "Select desired title:".bow
-    #@title = choose(forms)
   end
 
   # based on the collected information, generate different forms of the title.
-  # perhaps at some point this could be autoselected from the command line,
-  # like how the date formatting works, using symbols for different features...
-  # in theory could also handle this with the eval method like above - but this
-  # would probably be better as a send call or an instance_eval method :/
   def gen_forms(y, t, a)
     ad = a.downcase
     au = a.upcase
@@ -69,15 +55,14 @@ class Selector
   private
   # Pass in an array to list and be selected, and return the element that the
   # user selects back to the calling method. pretty sketchy way to interpret
-  # the users input as a range or integer, but seems to be working for now.
-  # requires you to check for an array and join it on the downside though
+  # the users input as a range (e.g., 0..2) or an integer (1).
   def choose(options, print: true)
     if options.length > 0
       options.each_with_index {|l, i| puts "#{i}\t#{l}" } if print
-      printf "[0 - #{options.length-1}]: ".bow
+      printf "[0 - #{options.length-1}]: "
       line = STDIN.gets.chomp || 0
       meta = "options[#{line}]"
-      mout = eval meta # in theory terrible but this ain't a rails app.....
+      mout = eval meta
       if mout.is_a? (Array)
         mout.join ' '
       else
@@ -98,8 +83,8 @@ class Selector
     end
   end
 
-  # parse out a year from a string, for each line of the document until found.
-  # then clean it up and return it
+  # Parse out a year from a string, for each line of the document until found.
+  # Then clean it up and return it.
   def gen_year
     @fulltxt.each do |l| # find year
       lm = l.match(/(19|20)\d\d/)

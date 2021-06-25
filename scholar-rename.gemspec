@@ -17,7 +17,6 @@ Gem::Specification.new do |g|
   g.homepage    = "http://github.com/jeremywrnr/scholar-rename"
   g.license     = "MIT"
 
-  g.add_dependency "colored"
   g.add_development_dependency "rake"
   g.add_development_dependency "rspec"
 

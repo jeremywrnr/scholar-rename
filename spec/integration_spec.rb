@@ -18,12 +18,23 @@ describe "bin/scholar-renamer" do
     expect($?.exitstatus).to eq 0
   end
 
-  it 'should test real file' do
-    system ("./bin/scholar-rename --format 0 spec/test.pdf")
+  it 'should grab the right year automatically' do
+    year =`./bin/scholar-rename --test-year spec/kevin.pdf`
+    expect(year.trim).to "2019"
+  end
+
+  it 'should test real files' do
+    system ("./bin/scholar-rename --auto spec/test.pdf")
     expect($?.exitstatus).to eq 0
-    system ("./bin/scholar-rename --format 0 spec/test\ space.pdf")
+  end
+
+  it 'should test real files with spaces' do
+    system ("./bin/scholar-rename --auto spec/test\ space.pdf")
     expect($?.exitstatus).to eq 0
-    system ("./bin/scholar-rename --format 0 spec/fake.pdf")
+  end
+
+  it 'should reject non-existent files' do
+    system ("./bin/scholar-rename --auto 0 spec/fake.pdf")
     expect($?.exitstatus).to eq 1
   end
 end
