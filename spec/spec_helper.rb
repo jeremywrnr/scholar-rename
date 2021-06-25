@@ -10,8 +10,5 @@ require_relative '../lib/renamer'
 require 'rubygems'
 require 'rspec'
 
-class Renamer
-  @@TESTING = true
-end
-
+#uncomment to mute output
 #def puts(*x); x; end

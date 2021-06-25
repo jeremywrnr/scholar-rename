@@ -7,7 +7,7 @@
 # renames a pdf file to author-title-year.pdf
 # or other formats based on your selection
 
-require_relative '../lib/selector'
-require_relative '../lib/renamer'
+require_relative "../lib/selector"
+require_relative "../lib/renamer"
 
 r = Renamer.new ARGV
