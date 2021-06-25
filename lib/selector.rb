@@ -26,10 +26,10 @@ class Selector
       puts "Options:"
       @content.each_with_index { |l, i| puts "#{i}\t#{l}" }
     end
-    printf "Select title line number " unless @options[:auto]
+    printf "Select title line number:" unless @options[:auto]
     title = choose(@content, print: false)
 
-    printf "Select author line number " unless @options[:auto]
+    printf "Select author line number:" unless @options[:auto]
     authors = choose(@content, print: false)
 
     puts "Select author form:" unless @options[:auto]
