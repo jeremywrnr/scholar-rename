@@ -15,6 +15,10 @@ for macOS, you can install w/ brew:
 
     brew install pkg-config poppler
 
+for Ubuntu:
+
+    sudo apt-get install poppler-utils
+
 ## about
 
 renames a pdf file to author-title-year.pdf or other formats based on your
