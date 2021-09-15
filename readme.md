@@ -1,7 +1,7 @@
 # scholar-rename
 
 [![Gem Version](https://badge.fury.io/rb/scholar-rename.svg)](https://badge.fury.io/rb/scholar-rename)
-[![Build Status](https://app.travis-ci.com/jeremywrnr/scholar-rename.svg?branch=main)](https://travis-ci.com/jeremywrnr/scholar-rename)
+[![Build Status](https://app.travis-ci.com/jeremywrnr/scholar-rename.svg?branch=main)](https://app.travis-ci.com/github/jeremywrnr/scholar-rename)
 [![MIT](https://img.shields.io/npm/l/alt.svg?style=flat)](http://jeremywrnr.com/mit-license)
 
 an interactive pdf-renamer tool.
