@@ -1,0 +1,54 @@
+# RuboCop configuration for scholar-rename
+
+AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+  TargetRubyVersion: 3.0
+
+# Uses gemspec-based development dependencies instead of a Gemfile list.
+Gemspec/DevelopmentDependencies:
+  Enabled: false
+
+# MFA isn't configured for this account/gem yet.
+Gemspec/RequireMFA:
+  Enabled: false
+
+# Small CLI tool, not a documented public API surface.
+Style/Documentation:
+  Enabled: false
+
+# `def puts(*x) = x` inside initialize is a deliberate --test-mode output
+# stub, not an accidental nested definition.
+Lint/NestedMethodDefinition:
+  Enabled: false
+
+# Established single-letter/short param names (c, a, y, t) throughout.
+Naming/MethodParameterName:
+  Enabled: false
+
+# set_content mirrors attr-style setters used elsewhere in this class.
+Naming/AccessorMethodName:
+  Enabled: false
+
+# has_prereq? predates this convention; renaming ripples into renamer.rb.
+Naming/PredicatePrefix:
+  Enabled: false
+
+# Allow slightly longer/more complex methods for this small, mostly-linear CLI.
+Metrics/MethodLength:
+  Max: 15
+
+Metrics/ClassLength:
+  Max: 120
+
+Metrics/BlockLength:
+  Max: 50
+
+Metrics/AbcSize:
+  Max: 26
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Metrics/PerceivedComplexity:
+  Max: 11
