@@ -1,27 +1,33 @@
-lib = File.expand_path("../lib/", __FILE__)
-$:.unshift lib unless $:.include?(lib)
+# frozen_string_literal: true
 
-require_relative "lib/version"
+require_relative 'lib/version'
+
+repo_url = 'https://github.com/jeremywrnr/scholar-rename'
 
 Gem::Specification.new do |g|
-  g.author      = "Jeremy Warner"
-  g.email       = "jeremywrnr@gmail.com"
-  g.name        = "scholar-rename"
+  g.author      = 'Jeremy Warner'
+  g.email       = 'jeremywrnr@gmail.com'
+  g.name        = 'scholar-rename'
 
-  g.version     = SR::Version
+  g.version     = SR::VERSION
   g.platform    = Gem::Platform::RUBY
-  g.date        = Time.now.strftime("%Y-%m-%d")
+  g.required_ruby_version = '>= 3.0'
 
-  g.summary     = "Rename pdfs based on author/title/year."
-  g.description = "Interactive tool to rename pdfs based on author/title/year."
-  g.homepage    = "http://github.com/jeremywrnr/scholar-rename"
-  g.license     = "MIT"
+  g.summary     = 'Rename pdfs based on author/title/year.'
+  g.description = 'Interactive tool to rename pdfs based on author/title/year.'
+  g.homepage    = repo_url
+  g.license     = 'MIT'
 
-  g.add_development_dependency "rake"
-  g.add_development_dependency "rspec"
-  g.add_development_dependency "webmock"
+  g.metadata = {
+    'source_code_uri' => repo_url,
+    'bug_tracker_uri' => "#{repo_url}/issues"
+  }
 
-  g.files        = Dir.glob("{bin,lib}/**/*") + %w(readme.md)
-  g.executables = ["scholar-rename"]
-  g.require_path = "lib"
+  g.add_development_dependency 'rspec'
+  g.add_development_dependency 'rubocop'
+  g.add_development_dependency 'webmock'
+
+  g.files = Dir.glob('{bin,lib}/**/*') + %w[readme.md]
+  g.executables = ['scholar-rename']
+  g.require_path = 'lib'
 end
