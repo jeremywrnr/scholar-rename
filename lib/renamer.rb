@@ -54,7 +54,7 @@ class Renamer
     elsif ['-v', '--version'].include?(a0)
       puts @version
       exit 0 unless @options[:test]
-    elsif !has_prereq?
+    elsif !prereq?
       puts 'please install pdftotext (via poppler) to use scholar-rename'
       puts 'OSX: brew install pkg-config poppler'
       exit 1
@@ -66,7 +66,7 @@ class Renamer
   end
   # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
-  def has_prereq?
+  def prereq?
     system('pdftotext -v 2> /dev/null')
     $CHILD_STATUS.success?
   end
@@ -76,7 +76,7 @@ class Renamer
     content = raw.encode('UTF-8', invalid: :replace, undef: :replace)
 
     # Choose pdf qualities
-    @selector.set_content(content)
+    @selector.content = content
     @selector.options = @options
     @selector.select_all
     md = @selector.metadata

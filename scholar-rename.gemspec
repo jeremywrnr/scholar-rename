@@ -2,6 +2,8 @@
 
 require_relative 'lib/version'
 
+repo_url = 'https://github.com/jeremywrnr/scholar-rename'
+
 Gem::Specification.new do |g|
   g.author      = 'Jeremy Warner'
   g.email       = 'jeremywrnr@gmail.com'
@@ -13,12 +15,12 @@ Gem::Specification.new do |g|
 
   g.summary     = 'Rename pdfs based on author/title/year.'
   g.description = 'Interactive tool to rename pdfs based on author/title/year.'
-  g.homepage    = 'http://github.com/jeremywrnr/scholar-rename'
+  g.homepage    = repo_url
   g.license     = 'MIT'
 
   g.metadata = {
-    'source_code_uri' => 'https://github.com/jeremywrnr/scholar-rename',
-    'bug_tracker_uri' => 'https://github.com/jeremywrnr/scholar-rename/issues'
+    'source_code_uri' => repo_url,
+    'bug_tracker_uri' => "#{repo_url}/issues"
   }
 
   g.add_development_dependency 'rspec'

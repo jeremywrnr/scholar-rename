@@ -9,7 +9,7 @@ class Selector
   attr_accessor :options
 
   def initialize(c = "Test\nPDF\nContent", opts = { format: 0, auto: true, no_lookup: false }, lookup = nil)
-    set_content(c)
+    self.content = c
     @options = opts
     @lookup = lookup || ScholarLookup.new
     return unless opts[:test]
@@ -17,7 +17,7 @@ class Selector
     def puts(*x) = x
   end
 
-  def set_content(str)
+  def content=(str)
     @full_text = str.split("\n")
     @content = @full_text[0..14]
                .reject { |x| x.length < 2 }

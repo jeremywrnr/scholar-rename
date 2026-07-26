@@ -26,14 +26,6 @@ Lint/NestedMethodDefinition:
 Naming/MethodParameterName:
   Enabled: false
 
-# set_content mirrors attr-style setters used elsewhere in this class.
-Naming/AccessorMethodName:
-  Enabled: false
-
-# has_prereq? predates this convention; renaming ripples into renamer.rb.
-Naming/PredicatePrefix:
-  Enabled: false
-
 # Allow slightly longer/more complex methods for this small, mostly-linear CLI.
 Metrics/MethodLength:
   Max: 15

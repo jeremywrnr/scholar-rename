@@ -35,6 +35,20 @@ jobs:
       - name: Build and install gem
         run: just build
 
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: Install just
+        uses: extractions/setup-just@v2
+
       - name: Run rubocop
-        if: matrix.ruby-version == '3.3'
         run: just lint-check
