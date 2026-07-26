@@ -4,6 +4,10 @@ describe ScholarLookup do
   let(:lookup) { ScholarLookup.new }
   let(:url) { %r{https://api\.semanticscholar\.org/graph/v1/paper/search} }
 
+  it "reports its source name" do
+    expect(lookup.source_name).to eq "Semantic Scholar"
+  end
+
   it "returns a match when the API finds a paper" do
     stub_request(:get, url).to_return(:status => 200, :body => {
       :data => [{

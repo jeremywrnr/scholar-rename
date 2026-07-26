@@ -9,10 +9,15 @@ require "json"
 class ScholarLookup
   ENDPOINT = "https://api.semanticscholar.org/graph/v1/paper/search"
   FIELDS = "title,authors,year,venue"
+  SOURCE_NAME = "Semantic Scholar"
 
   def initialize(open_timeout: 3, read_timeout: 5)
     @open_timeout = open_timeout
     @read_timeout = read_timeout
+  end
+
+  def source_name
+    SOURCE_NAME
   end
 
   def lookup(query)
@@ -47,8 +52,6 @@ class ScholarLookup
     return nil unless res.is_a?(Net::HTTPSuccess)
 
     res.body
-  rescue StandardError
-    nil
   end
 
   def parse(body)
@@ -66,8 +69,6 @@ class ScholarLookup
       :year => paper["year"] && paper["year"].to_s,
       :venue => paper["venue"],
     }
-  rescue JSON::ParserError
-    nil
   end
 
   def format_authors(authors)
