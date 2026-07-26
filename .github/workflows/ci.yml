@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        ruby-version: ["3.1", "3.2", "3.3", "4.0"]
+        ruby-version: ["3.0", "3.1", "3.2", "3.3", "4.0"]
 
     steps:
       - uses: actions/checkout@v4
@@ -31,6 +31,9 @@ jobs:
 
       - name: Run tests
         run: just spec
+
+      - name: Build and install gem
+        run: just build
 
       - name: Run rubocop
         if: matrix.ruby-version == '3.3'
