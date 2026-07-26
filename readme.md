@@ -23,8 +23,19 @@ for Ubuntu:
 ## about
 
 renames a pdf file to author-title-year.pdf or other formats based on your
-selection. there isn't actually anything scholarly about this tool, though
-academic people may find it useful for renaming pdfs that come in arbitrarily
-named file formats. services like mendeley kind of make this not super
-relevant. it helps when searching for a specific pdf and when labeling pdfs.
+selection. academic people may find it useful for renaming pdfs that come in
+arbitrarily named file formats. it helps when searching for a specific pdf
+and when labeling pdfs.
+
+## metadata lookup
+
+by default, scholar-rename queries the [Semantic Scholar Graph
+API](https://api.semanticscholar.org/) using the extracted pdf text to
+suggest an authoritative title/author/year. you'll be asked to confirm the
+match (auto-accepted when using `--auto`). if there's no internet
+connection, the api times out, or no match is found, scholar-rename falls
+back to its original manual line-picking flow -- nothing ever crashes or
+hangs waiting on the network. use `--no-lookup` to skip the network step
+entirely (useful when offline, batch-renaming many files, or avoiding the
+api's rate limits).
 

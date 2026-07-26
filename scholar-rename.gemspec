@@ -19,6 +19,7 @@ Gem::Specification.new do |g|
 
   g.add_development_dependency "rake"
   g.add_development_dependency "rspec"
+  g.add_development_dependency "webmock"
 
   g.files        = Dir.glob("{bin,lib}/**/*") + %w(readme.md)
   g.executables = ["scholar-rename"]

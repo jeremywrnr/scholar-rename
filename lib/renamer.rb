@@ -9,7 +9,7 @@ class Renamer
     al = args.last
 
     @real_file = false
-    @options = { :format => 0, :auto => false, :debug => false, :test => false }
+    @options = { :format => 0, :auto => false, :debug => false, :test => false, :no_lookup => false }
     @version = SR::Version
     @selector = Selector.new
     @formats = @selector.gen_forms("Year", "Title", "Author")
@@ -21,6 +21,10 @@ class Renamer
     if args.include? "--test"
       @options[:test] = true
       def puts(*x) x; end
+    end
+
+    if args.include? "--no-lookup"
+      @options[:no_lookup] = true
     end
 
     # Filename comes last.
@@ -36,9 +40,10 @@ class Renamer
 
     # Main argument processing.
     if args.length == 0 || a0 == "--h" || a0 == "--help"
-      puts "usage: scholar-rename (--format #) (--auto) [file.pdf]"
+      puts "usage: scholar-rename (--format #) (--auto) (--no-lookup) [file.pdf]"
       puts "\t--show-formats\tshow format options"
       puts "\t--auto\tpick default formatter"
+      puts "\t--no-lookup\tdisable Semantic Scholar metadata lookup"
       puts "\t-v, --version\tshow version number"
     elsif a0 == "-v" || a0 == "--version"
       puts @version

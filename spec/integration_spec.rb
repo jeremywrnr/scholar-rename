@@ -25,22 +25,22 @@ describe "bin/scholar-renamer" do
   end
 
   it "should grab the right year automatically" do
-    year = call "--auto --debug --show-year spec/kevin.pdf"
+    year = call "--auto --debug --no-lookup --show-year spec/kevin.pdf"
     expect(year).to eq "2019"
   end
 
   it "should test real files" do
-    call "--auto spec/test.pdf --debug"
+    call "--auto --no-lookup spec/test.pdf --debug"
     expect($?.exitstatus).to eq 0
   end
 
   it "should test real files with spaces in their name" do
-    call "--auto spec/test\ space.pdf --debug"
+    call "--auto --no-lookup spec/test\ space.pdf --debug"
     expect($?.exitstatus).to eq 0
   end
 
   it "should reject non-existent files" do
-    call "--auto spec/fake.pdf"
+    call "--auto --no-lookup spec/fake.pdf"
     expect($?.exitstatus).to eq 1
   end
 end

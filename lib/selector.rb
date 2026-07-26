@@ -1,14 +1,15 @@
+require_relative "./scholar_lookup"
+
 # Class for choosing and displaying the information from the pdf.
-# I wonder if this could be augmented with information from google scholar
-# somehow, there is probably a ruby (or at least python) api.
 
 class Selector
   attr_reader :title, :metadata, :content
   attr_accessor :options
 
-  def initialize(c = "Test\nPDF\nContent", opts = { :format => 0, :auto => true })
+  def initialize(c = "Test\nPDF\nContent", opts = { :format => 0, :auto => true }, lookup = nil)
     set_content(c)
     @options = opts
+    @lookup = lookup || ScholarLookup.new
     if opts[:test]
       def puts(*x) x; end
     end
@@ -22,25 +23,64 @@ class Selector
   end
 
   def select_all
-    if !@options[:auto]
-      puts "Options:"
-      @content.each_with_index { |l, i| puts "#{i}\t#{l}" }
+    matched = false
+
+    unless @options[:no_lookup]
+      match = safe_lookup
+      if match && confirm_match(match)
+        title = match[:title]
+        author = match[:author]
+        year = match[:year] || gen_year
+        matched = true
+      end
     end
-    printf "Select title line number:" unless @options[:auto]
-    title = choose(@content, print: false)
 
-    printf "Select author line number:" unless @options[:auto]
-    authors = choose(@content, print: false)
+    unless matched
+      if !@options[:auto]
+        puts "Options:"
+        @content.each_with_index { |l, i| puts "#{i}\t#{l}" }
+      end
+      printf "Select title line number:" unless @options[:auto]
+      title = choose(@content, print: false)
 
-    puts "Select author form:" unless @options[:auto]
-    author = gen_authors(authors)
+      printf "Select author line number:" unless @options[:auto]
+      authors = choose(@content, print: false)
 
-    # Automatically match.
-    year = gen_year
-    
+      puts "Select author form:" unless @options[:auto]
+      author = gen_authors(authors)
+
+      # Automatically match.
+      year = gen_year
+    end
+
     forms = gen_forms(year, title, author)
     @metadata = {:year => year, :title => title, :author => author}
     @title = forms[@options[:format]]
+  end
+
+  # Query the lookup source with our best title guess. Never let a lookup
+  # failure interrupt the rest of the selection flow.
+  def safe_lookup
+    @lookup.lookup(@content.first)
+  rescue StandardError
+    nil
+  end
+
+  # Show the matched metadata and let the user accept or reject it.
+  # --auto always accepts, matching how #choose behaves elsewhere.
+  def confirm_match(match)
+    summary = "#{match[:title]} -- #{match[:author]}"
+    summary += " (#{match[:year]})" if match[:year]
+
+    if @options[:auto]
+      puts "Found match via Semantic Scholar: #{summary} (auto-accepted)"
+      true
+    else
+      puts "Found match via Semantic Scholar: #{summary}"
+      printf "Use this? [Y/n]: "
+      resp = STDIN.gets.to_s.strip.downcase
+      resp.empty? || resp == "y" || resp == "yes"
+    end
   end
 
   # based on the collected information, generate different forms of the title.
