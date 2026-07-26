@@ -41,6 +41,7 @@ class Selector
 
     summary = "#{match[:title]} -- #{match[:author]}"
     summary += " (#{match[:year]})" if match[:year]
+    summary += " [#{match[:venue]}]" if match[:venue]
     puts "Found match via #{@lookup.source_name}: #{summary}"
 
     if @options[:auto]
@@ -75,6 +76,9 @@ class Selector
 
   # based on the collected information, generate different forms of the title.
   def gen_forms(y, t, a)
+    y = sanitize_path_component(y)
+    t = sanitize_path_component(t)
+    a = sanitize_path_component(a)
     ad = a.downcase
     au = a.upcase
     return [
@@ -87,6 +91,14 @@ class Selector
              "#{au} #{y} #{t}.pdf",
              "#{ad} #{y} #{t}.pdf",
            ]
+  end
+
+  # Filenames are built by combining year/title/author into a single path
+  # segment -- strip path separators so a "/" in a title (manually picked or
+  # fetched from an external source) can't turn File.rename into a move into
+  # a different (likely non-existent) directory.
+  def sanitize_path_component(s)
+    s.to_s.gsub(%r{[/\\]}, "-")
   end
 
   # Pass in an array to list and be selected, and return the element that the
@@ -103,7 +115,7 @@ class Selector
         list.each_with_index { |l, i| puts "#{i}\t#{l}" }
         printf "[0 - #{options.length - 1}]: "
       end
-      line = STDIN.gets.chomp || 0
+      line = STDIN.gets&.chomp || 0
     end
 
     meta = "list[#{line}]"

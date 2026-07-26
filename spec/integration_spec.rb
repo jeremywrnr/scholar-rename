@@ -34,6 +34,16 @@ describe "bin/scholar-renamer" do
     expect($?.exitstatus).to eq 0
   end
 
+  it "should succeed with the default lookup enabled (best-effort network)" do
+    call "--auto spec/test.pdf --debug"
+    expect($?.exitstatus).to eq 0
+  end
+
+  it "should support --auto and --no-lookup in either order" do
+    call "--no-lookup --auto spec/test.pdf --debug"
+    expect($?.exitstatus).to eq 0
+  end
+
   it "should test real files with spaces in their name" do
     call "--auto --no-lookup spec/test\ space.pdf --debug"
     expect($?.exitstatus).to eq 0

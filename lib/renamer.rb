@@ -27,6 +27,14 @@ class Renamer
       @options[:no_lookup] = true
     end
 
+    if args.include? "--auto"
+      @options[:auto] = true
+    end
+
+    if args.include? "--format"
+      @options[:format] = args[args.index("--format") + 1].to_i
+    end
+
     # Filename comes last.
     if !al.nil? && al[0] != "-"
       @file = File.join(Dir.pwd, args.last).to_s
@@ -54,10 +62,6 @@ class Renamer
       exit 1
     elsif a0 == "--show-formats"
       @formats.each_with_index { |x, i| puts "\t#{i}: #{x}" }
-    elsif a0 == "--format"
-      @options[:format] = args[1].to_i
-    elsif a0 == "--auto"
-      @options[:auto] = true
     end
 
     rename args if @real_file

@@ -1,6 +1,7 @@
 require "net/http"
 require "uri"
 require "json"
+require "openssl"
 
 # Queries the Semantic Scholar Graph API to cross-reference a rough title
 # guess against real paper metadata. Always returns a Hash or nil; never
@@ -11,7 +12,25 @@ class ScholarLookup
   FIELDS = "title,authors,year,venue"
   SOURCE_NAME = "Semantic Scholar"
 
-  def initialize(open_timeout: 3, read_timeout: 5)
+  # Exceptions expected from a flaky network/API, silently treated as "no
+  # match". Anything else (e.g. a response-shape change breaking #parse) is
+  # still caught so a rename can never crash, but is reported via warn so the
+  # regression isn't invisible.
+  EXPECTED_ERRORS = [
+    SocketError,
+    Timeout::Error,
+    SystemCallError,
+    OpenSSL::SSL::SSLError,
+    Net::ProtocolError,
+    JSON::ParserError,
+  ].freeze
+
+  # A match only counts if at least half of the query's words also appear in
+  # the returned title -- guards against a short/generic query (e.g. a running
+  # header) fuzzy-matching an unrelated paper.
+  MIN_WORD_OVERLAP = 0.5
+
+  def initialize(open_timeout: 2, read_timeout: 3)
     @open_timeout = open_timeout
     @read_timeout = read_timeout
   end
@@ -26,12 +45,31 @@ class ScholarLookup
     body = fetch(build_uri(query.strip))
     return nil if body.nil?
 
-    parse(body)
-  rescue StandardError
+    match = parse(body)
+    return nil unless match && plausible_match?(query, match[:title])
+
+    match
+  rescue *EXPECTED_ERRORS
+    nil
+  rescue StandardError => e
+    warn "scholar-rename: unexpected lookup error (#{e.class}): #{e.message}"
     nil
   end
 
   private
+
+  def plausible_match?(query, title)
+    query_words = normalize_words(query)
+    title_words = normalize_words(title)
+    return false if query_words.empty? || title_words.empty?
+
+    overlap = (query_words & title_words).length
+    overlap.to_f / query_words.length >= MIN_WORD_OVERLAP
+  end
+
+  def normalize_words(str)
+    str.downcase.gsub(/[^a-z0-9\s]/, "").split
+  end
 
   def build_uri(query)
     uri = URI(ENDPOINT)
